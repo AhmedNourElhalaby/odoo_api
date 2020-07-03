@@ -10,4 +10,4 @@ app.use(bodyParser.json());
 app.use('/api', require('./routes/api'));
 
 //listen for requests
-app.listen(process.env.port || 5000, () => console.log('server start on port 5000'))
+app.listen(process.env.port || 5002, () => console.log('server start on port 5002'))
