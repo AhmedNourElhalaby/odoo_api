@@ -30,14 +30,21 @@ router.post('/login', (req, res) => {
             res.sendStatus(403);
         }
         let user = {}
-         user.id = result;
-
-        jwt.sign({auth}, secret_key, {expiresIn: '2 Days'}, (err, token) => {
-            res.json({
-                token,
-                user
+         
+         odoo.execute_kw('res.partner', 'search_read', [[[['user_id.id','=', result]],['id']]], function (err, value) {
+            if (err) { 
+                return res.send(err); 
+            }
+            user.id = value[0].id;
+            jwt.sign({auth}, secret_key, (err, token) => {
+                res.json({
+                    token,
+                    user
+                });
             });
-        });
+         });
+
+        
 
     });
 
