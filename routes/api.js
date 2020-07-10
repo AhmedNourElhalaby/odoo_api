@@ -84,6 +84,37 @@ router.post('/call_method/:modelname/:method', verifyToken, (req, res)=> {
     });
 });
 
+router.post('/users/:modelname/:method', (req, res)=> {
+
+    const modelname = req.params.modelname;
+    const method = req.params.method;
+    const list = req.body.paramlist;
+    const resultList = Object.values(list);
+    // const odoo = new odoo_xmlrpc(auth);
+    var odoo = new odoo_xmlrpc({
+        url: "http://34.94.160.246",
+        port: 8060,
+        db: 'doc',
+        username: 'admin',
+        password: 'admin'
+      });
+
+      
+      
+      odoo.connect(function (err, val) {
+        if (err) { return console.log(err); }
+        console.log(val);
+    
+        odoo.execute_kw(modelname, method, [resultList], function (err, value) {
+          if (err) { return res.send(err); }
+          res.json(value)
+    
+          console.log(value)
+        });
+      });
+    });
+
+
 
 
 
