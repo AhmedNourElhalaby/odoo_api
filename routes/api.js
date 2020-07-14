@@ -30,19 +30,49 @@ router.post('/login', (req, res) => {
             res.sendStatus(403);
         }
         let user = {}
-         
-         odoo.execute_kw('res.partner', 'search_read', [[[['user_id.id','=', result]],['id']]], function (err, value) {
-            if (err) { 
-                return res.send(err); 
-            }
-            user.id = value[0].id;
-            jwt.sign({auth}, secret_key, (err, token) => {
-                res.json({
-                    token,
-                    user
+        if (req.body.type == 2) {
+            odoo.execute_kw('res.partner', 'search_read', [[[['user_id.id','=', result],['is_patient', '=', true]],['id']]], function (err, value) {
+                if (err) { 
+                    return res.send(err); 
+                }
+                
+                if (value.length != 0) {
+                    user.id = value[0].id;
+                    jwt.sign({auth}, secret_key, (err, token) => {
+                        res.json({
+                            token,
+                            user
+                        });
+                    });
+                } else {
+                    result = {"code": 400, "message": "failed", 'data': [], "errors": ["username or password is incorrect."]}
+                    res.send(result)
+                }
+                
                 });
-            });
-         });
+        } else {
+            odoo.execute_kw('res.partner', 'search_read', [[[['user_id.id','=', result],['is_doctor', '=', true]],['id']]], function (err, value) {
+                if (err) { 
+                    return res.send(err); 
+                }
+                if (value.length != 0) {
+                    user.id = value[0].id;
+                    jwt.sign({auth}, secret_key, (err, token) => {
+                        res.json({
+                            token,
+                            user
+                        });
+                    });
+                } else {
+                    result = {"code": 400, "message": "failed", 'data': [], "errors": ["username or password is incorrect."]}
+                    res.send(result)
+                }
+                
+                });
+
+        }
+         
+        
 
         
 
