@@ -46,7 +46,7 @@ router.post('/login', (req, res) => {
                     });
                 } else {
                     result = {"code": 400, "message": "failed", 'data': [], "errors": ["username or password is incorrect."]}
-                    res.send(result)
+                    res.status(400).send(result)
                 }
                 
                 });
@@ -65,7 +65,7 @@ router.post('/login', (req, res) => {
                     });
                 } else {
                     result = {"code": 400, "message": "failed", 'data': [], "errors": ["username or password is incorrect."]}
-                    res.send(result)
+                    res.status(400).send(result)
                 }
                 
                 });
@@ -102,7 +102,7 @@ router.post('/call_method/:modelname/:method', verifyToken, (req, res)=> {
                 if(err) return console.log('error', err);
               
                 odoo.execute_kw(modelname, method, [resultList], function (err, value) {
-                    if (err) { return res.send(err); }
+                    if (err) { return res.status(400).send(err); }
                     res.json({
                         data: value
                     });
@@ -136,7 +136,7 @@ router.post('/users/:modelname/:method', (req, res)=> {
         console.log(val);
     
         odoo.execute_kw(modelname, method, [resultList], function (err, value) {
-          if (err) { return res.send(err); }
+          if (err) { return res.status(400).send(err); }
           res.json(value)
     
           console.log(value)
